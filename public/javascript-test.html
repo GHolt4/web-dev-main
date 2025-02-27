@@ -1,0 +1,37 @@
+<html>
+<head>
+<script>
+async function testAuth() {
+	const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+    const pageUrl = new URL(corsProxy + 'https://api.99spokes.com/v1/bikes');
+
+    const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TmFtZSI6Imdlb3JnZWhvbHQiLCJ2ZXJzaW9uIjoxLCJpYXQiOjE3MzM3ODkzMzJ9.xWEMcMU4QUoLm8Xvy6lkznGPeV3Fe_CTlSrk_4IDUOo'; // Replace with your actual token
+
+    // Test different header variations
+    const responses = await Promise.all([     
+        fetch(pageUrl, {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${TOKEN}`
+            }
+        })
+    ]);
+    // Check which one works
+    for (let i = 0; i < responses.length; i++) {
+        console.log(`Test ${i + 1} status:`, responses[i].status);
+        try {
+            const text = await responses[i].text();
+            console.log(`Test ${i + 1} response:`, text);
+        } catch (e) {
+            console.log(`Test ${i + 1} error:`, e);
+        }
+    }
+}
+testAuth().catch(console.error);
+ 
+</script>
+<head>
+<body>
+<h1> test</h1>
+</body>
+</html>
