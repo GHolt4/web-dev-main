@@ -47,24 +47,6 @@ class BikeController extends Controller
             
             $year = $request->input('year', date('Y'));
 
-            // Fetch subcategories for the specific year
-
-            // $subcategoriesResponse = $service->getSubcategories($year);
-
-            // Log::info('Subcategories response:', [
-
-            //     'status' => $subcategoriesResponse->status(),
-
-            //     'body' => $subcategoriesResponse->json()
-
-            // ]);
-
-            // Get subcategories from the response
-
-            // $subcategories = $subcategoriesResponse->successful() ? $subcategoriesResponse->json() : [];
-
-            // Fetch bikes if there are search criteria
-
             $bikes = [];
 
             if ($request->hasAny(['subcategory', 'brand', 'year'])) {
@@ -99,16 +81,19 @@ class BikeController extends Controller
             // extract all the subcategories from the bikes
 
             $subcategories = [];
+            $brands = [];
 
             foreach ($bikes as $bike) {
                 $subcategories[] = $bike['subcategory'];
+                $brands[] = $bike['maker'];
             }
 
             // Remove duplicate subcategories
             $subcategories = array_unique($subcategories);
+            $brands = array_unique($brands);
 
 
-            return view('bikes.index', compact('bikes', 'subcategories', 'year'));
+            return view('bikes.index', compact('bikes', 'subcategories', 'year', 'brands'));
 
         } catch (\Exception $e) {
 

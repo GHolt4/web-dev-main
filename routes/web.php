@@ -23,10 +23,6 @@ Route::get('/about', function () {
     return view('about');
 });
 
-Route::get('/simple-view', function () {
-    return view('bikes.simple-view');
-});
-
 Route::get('/register', [RegisteredUserController::class, 'create']);
 Route::post('/register', [RegisteredUserController::class, 'store']);
 
@@ -36,8 +32,3 @@ Route::post('/logout', [SessionController::class, 'destroy']);
 
 Route::get('/bikes', [BikeController::class, 'search'])->name('bikes.search');
 Route::get('/bikes/{bikeId}', [BikeController::class, 'show'])->name('bikes.show');
-
-Route::get('/test-api', function(NinetyNineSpokesService $service) {    $response = $service->getSubcategories();    dd($response->json());});
-// Route::get('/bikes', function(NinetyNineSpokesService $service) {    $su = $service->getCategories();    dd($response->json());});
-
-Route::get('/simple-bikes', [SimpleBikesController::class, 'index'])->name('bikes.simple');
