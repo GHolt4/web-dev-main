@@ -11,6 +11,8 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/bikes', [BikeController::class, 'index'])->name('bike.index');
+
 Route::get('/favourites', function () {
     return view('favourites');
 });
