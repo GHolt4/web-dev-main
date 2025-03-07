@@ -11,33 +11,24 @@
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="md:flex">
                 {{-- Bike Image --}}
-                <div id="carousel-wrapper" class="overflow-hidden md:w-1/2 h-auto relative">
-                    <div id="carousel" class="flex transition-transform duration-500">
-                        @foreach($bike['images'] as $image)
-                            <img src="{{ $image['url'] }}" alt="{{ $bike['model'] }}" class="w-full h-auto object-contain min-w-full">
-                        @endforeach
-                    </div>
-                    <button id="prev" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-900 text-white p-2 rounded-full hover:bg-yellow-500 transition">
-                        &#8592;
-                    </button>
-                    <button id="next" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-900 text-white p-2 rounded-full hover:bg-yellow-500 transition">
-                        &#8594;
-                    </button>
-                </div>                
+                <div class="md:w-1/2">
+                    @if($bike['image_url'] ?? false)
+                    <img src="{{ $bike['image_url'] }}" alt="{{ $bike['model'] }}" class="w-full h-96 object-cover">
+                    @endif
+                </div>
 
                 {{-- Bike Details --}}
                 <div class="md:w-1/2 p-6">
                     <div class="mb-4">
                         <h1 class="text-3xl font-bold">{{ $bike['model'] }}</h1>
                         <p class="text-gray-600">{{ $bike['maker'] }} - {{ $bike['year'] }}</p>
-                        <p class="text-gray-600">{{ $bike['category'] }}</p>
-                        <p class="text-gray-600">{{ $bike['subcategory'] }}</p>
-                        @php
-                            $prices = $bike['prices'] ?? [];
-                            $priceGBP = collect($prices)->firstWhere('currency', 'GBP')['amount'] ?? 0;
-                        @endphp
-                        <h3 class="text-gray-800 mt-2">£{{ number_format($priceGBP, 2) }}</h3>
                     </div>
+
+                    {{-- <div class="mb-6">
+                        <h2 class="text-2xl font-semibold text-green-600">
+                            ${{ number_format($bike['price'], 2) }}
+                        </h2>
+                    </div> --}}
 
                     {{-- Specifications --}}
                     <div class="space-y-4">
@@ -63,29 +54,4 @@
             </div>
         </div>
     </div>
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const carousel = document.getElementById("carousel");
-    const images = carousel.children;
-    const totalImages = images.length;
-    let currentIndex = 0;
-
-    const nextButton = document.getElementById("next");
-    const prevButton = document.getElementById("prev");
-
-    function updateCarousel() {
-        carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-    }
-
-    nextButton.addEventListener("click", function () {
-        currentIndex = (currentIndex + 1) % totalImages;
-        updateCarousel();
-    });
-
-    prevButton.addEventListener("click", function () {
-        currentIndex = (currentIndex - 1 + totalImages) % totalImages;
-        updateCarousel();
-    });
-});
-</script>
 </x-layout>

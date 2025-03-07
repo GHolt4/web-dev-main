@@ -23,8 +23,6 @@ Route::get('/about', function () {
     return view('about');
 });
 
-Route::get('/bikes', [BikeController::class, 'index'])->name('bike.index');
-
 Route::get('/register', [RegisteredUserController::class, 'create']);
 Route::post('/register', [RegisteredUserController::class, 'store']);
 
