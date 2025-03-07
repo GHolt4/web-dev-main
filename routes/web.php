@@ -36,3 +36,5 @@ Route::get('/bikes', [BikeController::class, 'search'])->name('bikes.search');
 Route::get('/bikes/{bikeId}', [BikeController::class, 'show'])->name('bikes.show');
 
 Route::post('/bikes/store', [BikeController::class, 'store'])->name('bikes.store');
+Route::get('/favourites', [BikeController::class, 'showFavourites'])->name('favourites');
+Route::delete('/favorites/{bike}', [BikeController::class, 'destroy'])->name('favorites.destroy');

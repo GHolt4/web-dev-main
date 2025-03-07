@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
-
-use App\Http\Controllers\SimpleBikesController;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class BikeController extends Controller
@@ -116,7 +114,7 @@ class BikeController extends Controller
         // Validate the request if needed
         $request->validate([
             'bike_id' => 'required|string',
-            'user_id' => 'required|string',
+            'user_id' => 'required|interger',
         ]);
         // Insert into database
         DB::table('favourites')->insert([
@@ -128,5 +126,24 @@ class BikeController extends Controller
         return redirect()->back()->with('success', 'Bike added successfully!');
     }
 
+    public function showFavourites()
+    {
+        if (!Auth::check()) {
+            // Handle unauthenticated users
+            return redirect('/login');
+        }
+        try {
+            $favouriteBikes = DB::table('favourites')
+                            ->join('bikes', 'favourites.bike_id', '=', 'bikes.id')
+                            ->where('favourites.user_id', Auth::id())
+                            ->select('bikes.*')
+                            ->get();
+        } catch (\Exception $e) {
+            // Log the error and return an empty collection
+            Log::error('Error fetching favourite bikes: ' . $e->getMessage());
+            $favouriteBikes = collect([]);
+        }
+        return view('favourites', ['favouriteBikes' => $favouriteBikes]);
+    }
 }
  
