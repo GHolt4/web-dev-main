@@ -32,3 +32,5 @@ Route::post('/logout', [SessionController::class, 'destroy']);
 
 Route::get('/bikes', [BikeController::class, 'search'])->name('bikes.search');
 Route::get('/bikes/{bikeId}', [BikeController::class, 'show'])->name('bikes.show');
+
+Route::post('/bikes/store', [BikeController::class, 'store'])->name('bikes.store');

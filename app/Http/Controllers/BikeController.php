@@ -11,8 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\SimpleBikesController;
+use App\Models\User;
 
 
 class BikeController extends Controller
@@ -107,6 +109,23 @@ class BikeController extends Controller
 
         }
 
+    }
+
+    public function store(Request $request)
+    {
+        // Validate the request if needed
+        $request->validate([
+            'bike_id' => 'required|string',
+            'user_id' => 'required|string',
+        ]);
+        // Insert into database
+        DB::table('favourites')->insert([
+            'user_id' => $request->user_id,
+            'bike_id' => $request->bike_id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        return redirect()->back()->with('success', 'Bike added successfully!');
     }
 
 }

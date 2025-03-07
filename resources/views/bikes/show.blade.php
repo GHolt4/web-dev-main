@@ -91,12 +91,13 @@
 
             <!-- Favorite Button -->
             <div class="mt-6">
-                <button id="favoriteButton" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                    Add to Favorites
-                </button>
-                @php
-                    dd($bike['id']);
-                @endphp
+                <form action="{{ route('bikes.store') }}" method="POST">
+
+                    @csrf
+                <input type="hidden" name="bike_id" value="{{ $bike['id'] }}">
+                <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                <button type="submit" class="btn btn-primary">Add to Favourites</button>
+                </form>
             </div>
         </div>
     </div>
