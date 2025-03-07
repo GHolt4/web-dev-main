@@ -4,8 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\BikeController;
-use App\Services\NinetyNineSpokesService;
-use App\Http\Controllers\SimpleBikesController;
+use App\Http\Controllers\FavoriteController;
 
 Route::get('/', function () {
     return view('home');
@@ -34,3 +33,6 @@ Route::post('/logout', [SessionController::class, 'destroy']);
 
 Route::get('/bikes', [BikeController::class, 'search'])->name('bikes.search');
 Route::get('/bikes/{bikeId}', [BikeController::class, 'show'])->name('bikes.show');
+
+Route::post('/favorite', [FavoriteController::class, 'store'])->middleware('auth');
+Route::get('/favorites', [FavoriteController::class, 'index'])->middleware('auth')->name('favorites.index');

@@ -1,5 +1,8 @@
 {{-- resources/views/bikes/index.blade.php --}}
 <x-layout>
+    <header>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+    </header>
     <x-slot:heading>
 
         Find Bike Page
@@ -79,14 +82,13 @@
 
                         View Details
                     </a>
-                </div>
+                </div>  
             </div>
 
             @empty
             <div class="col-span-full text-center py-8">
                 <p class="text-gray-500">No bikes found matching your criteria.</p>
             </div>
-
             @endforelse
         </div>
     </div>
