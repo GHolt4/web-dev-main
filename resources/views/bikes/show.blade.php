@@ -43,7 +43,7 @@
                         <h3 class="text-xl font-semibold">Specifications</h3>
                         <p class="text-gray-700"><strong>Gender:</strong> {{$bike['gender']}}</p>
                         <p class="text-gray-700"><strong>Shifting:</strong> {{$bike['shifting']['kind']}}</p>
-                        <p class="text-gray-700"><strong>Weight (KG):</strong> {{$bike['weight']['weightKG']}}</p>
+                        <p class="text-gray-700"><strong>Weight (KG):</strong> {{($bike['weight'] ?? null)['weightKG'] ?? "N/A"}}</p>
                         <p class="text-gray-700"><strong>Wheels (inch):</strong> {{ implode(', ', $bike['wheels']['kinds'] ?? []) }}</p>
                         <p class="text-gray-700"><strong>Gearing Front:</strong> {{implode(', ', $bike['gearing']['front'] ?? [])}}</p>
                         <p class="text-gray-700"><strong>Gearing Rear:</strong> {{implode(', ', $bike['gearing']['rear'] ?? [])}}</p>
@@ -90,15 +90,16 @@
             @endif
 
             <!-- Favorite Button -->
+            @auth
             <div class="mt-6">
                 <form action="{{ route('bikes.store') }}" method="POST">
-
                     @csrf
-                <input type="hidden" name="bike_id" value="{{ $bike['id'] }}">
-                <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                <button type="submit" class="btn btn-primary">Add to Favourites</button>
+                    <input type="hidden" name="bike_id" value="{{ $bike['id'] }}">
+                    <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                    <button type="submit" class="btn btn-primary">Add to Favourites</button>
                 </form>
             </div>
+            @endauth
         </div>
     </div>
     

@@ -13,12 +13,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
 
 
 class BikeController extends Controller
 
 {
-
+    
     public function show(NinetyNineSpokesService $service, string $bikeId)
 
     {
@@ -45,11 +46,17 @@ class BikeController extends Controller
 
         try {
             
+            Log::info('bikes search start', [
+
+                'request' => $request->all(),
+
+            ]);
+
             $year = $request->input('year', date('Y'));
 
             $bikes = [];
 
-            if ($request->hasAny(['subcategory', 'brand', 'year'])) {
+            // if ($request->hasAny(['subcategory', 'brand', 'year'])) {
 
                 $response = $service->searchBikes($request->validated());
 
@@ -75,22 +82,23 @@ class BikeController extends Controller
 
             ]);
 
-            }
-
-
-            // extract all the subcategories from the bikes
+            // }
 
             $subcategories = [];
             $brands = [];
 
             foreach ($bikes as $bike) {
                 $subcategories[] = $bike['subcategory'];
-                $brands[] = $bike['maker'];
+
+                $brand = new stdClass;
+                $brand->maker = $bike['maker'];
+                $brand->makerId = $bike['makerId'];
+                $brands[] = $brand;
             }
 
             // Remove duplicate subcategories
             $subcategories = array_unique($subcategories);
-            $brands = array_unique($brands);
+            $brands = array_unique($brands, SORT_REGULAR);
 
 
             return view('bikes.index', compact('bikes', 'subcategories', 'year', 'brands'));
@@ -114,7 +122,7 @@ class BikeController extends Controller
         // Validate the request if needed
         $request->validate([
             'bike_id' => 'required|string',
-            'user_id' => 'required|interger',
+            'user_id' => 'required|integer',
         ]);
         // Insert into database
         DB::table('favourites')->insert([
@@ -126,18 +134,52 @@ class BikeController extends Controller
         return redirect()->back()->with('success', 'Bike added successfully!');
     }
 
-    public function showFavourites()
+    public function showFavourites(NinetyNineSpokesService $service)
     {
         if (!Auth::check()) {
             // Handle unauthenticated users
             return redirect('/login');
         }
         try {
-            $favouriteBikes = DB::table('favourites')
-                            ->join('bikes', 'favourites.bike_id', '=', 'bikes.id')
+            $bikeIDs = DB::table('favourites')
+                            // ->join('bikes', 'favourites.bike_id', '=', 'bikes.id')
                             ->where('favourites.user_id', Auth::id())
-                            ->select('bikes.*')
+                            ->select('bike_id')
                             ->get();
+
+// bike ids
+            $favouriteBikes = [];
+
+            foreach ($bikeIDs as $bikeID) {
+                $response = $service->getBike($bikeID->bike_id);
+
+                if (!$response->successful()) {
+
+                    Log::error('99 Spokes API error', [
+
+                        'status' => $response->status(),
+
+                        'body' => $response->json()
+
+                    ]);
+
+                    return back()->with('error', 'Unable to fetch bikes. Please try again later.');
+
+                }
+
+                $favouriteBikes[] = $response->json();
+
+                Log::info('bikes response 2:', [
+
+                    'length' => count($favouriteBikes),
+
+                    'bike' => $favouriteBikes
+
+                ]);
+            }
+
+            // $favouriteBikes = $bikeIDs;
+
         } catch (\Exception $e) {
             // Log the error and return an empty collection
             Log::error('Error fetching favourite bikes: ' . $e->getMessage());
@@ -145,5 +187,6 @@ class BikeController extends Controller
         }
         return view('favourites', ['favouriteBikes' => $favouriteBikes]);
     }
+    
 }
  

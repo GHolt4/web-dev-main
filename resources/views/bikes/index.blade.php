@@ -21,7 +21,7 @@
                             <option value="{{ $subcategory }}"
                                 {{ request('subcategory') == $subcategory ? 'selected' : '' }}>
 
-                                {{ $subcategory }}
+                                {{ ucfirst($subcategory) }}
                             </option>
 
                             @endforeach
@@ -29,12 +29,12 @@
                     </div>
                     <div>
                         <label for="brand" class="block text-sm font-medium text-gray-700">Brand</label>
-                        <select name="brand" id="brand" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <select name="makerId" id="makerId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             <option value="">All Brands</option>
                             @foreach ($brands as $brand)
-                            <option value="{{ $brand }}" {{ request('brand') == $brand ? 'selected' : '' }}>
+                            <option value="{{ $brand->makerId }}" {{ request('makerId') == $brand->makerId ? 'selected' : '' }}>
 
-                                {{ $brand }}
+                                {{ $brand->maker }}
                             </option>
                             @endforeach
                         </select>
@@ -73,7 +73,11 @@
                         $prices = $bike['prices'] ?? [];
                         $priceGBP = collect($prices)->firstWhere('currency', 'GBP')['amount'] ?? 0;
                         @endphp
-                        <p class="text-gray-800 mt-2">£{{ number_format($priceGBP, 2) }}</p>
+                        @if ($priceGBP > 0)
+                            <p class="text-gray-800 mt-2">£{{ number_format($priceGBP, 2) }}</p>
+                        @else
+                            <p class="text-gray-800 mt-2">Price not available</p>
+                        @endif
                         <a href="{{ route('bikes.show', $bike['id']) }}"
                         class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
 
