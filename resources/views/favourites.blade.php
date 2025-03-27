@@ -29,6 +29,40 @@
                        class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
                         View Details
                     </a>
+                    <button type="button" onclick="document.getElementById('review-form-{{ $bike['id'] }}-{{ $loop->iteration }}').classList.toggle('hidden')"
+                            class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                        Review
+                    </button>
+                    <div id="review-form-{{ $bike['id'] }}-{{ $loop->iteration }}" class="hidden mt-4">
+                        <form action="{{ route('reviews.store', ['bikeId' => $bike['id']]) }}" method="POST">
+                            @csrf
+                            <div class="mb-2">
+                                <label for="review-text-{{ $bike['id'] }}-{{ $loop->iteration }}" class="block text-sm font-medium text-gray-700">Your Review</label>
+                                <textarea id="review-text-{{ $bike['id'] }}-{{ $loop->iteration }}" name="review_text" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></textarea>
+                            </div>
+                            <div class="mb-2">
+                                <label for="rating-{{ $bike['id'] }}-{{ $loop->iteration }}" class="block text-sm font-medium text-gray-700">Rating</label>
+                                <select id="rating-{{ $bike['id'] }}-{{ $loop->iteration }}" name="rating" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <option value="" disabled selected>Select a rating</option>
+                                    <option value="1">1 - Poor</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="5">5 - Excellent</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="mt-2 inline-block bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
+                    <form action="{{ route('bikes.destroy', $bike['id']) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this bike from your favourites?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                            Delete
+                        </button>
+                    </form>
                 </div>
             </div>
         @endforeach

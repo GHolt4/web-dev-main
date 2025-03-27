@@ -187,6 +187,17 @@ class BikeController extends Controller
         }
         return view('favourites', ['favouriteBikes' => $favouriteBikes]);
     }
+
+    public function destroy($id)
+    {
+        // Delete the bike from the favourites table
+        DB::table('favourites')
+            ->where('bike_id', $id)
+            ->where('user_id', Auth::id()) // Ensure the bike belongs to the authenticated user
+            ->delete();
+
+        // Redirect back to the favourites page with a success message
+        return redirect()->route('favourites')->with('success', 'Bike removed from favourites successfully.');
+    }
     
 }
- 
