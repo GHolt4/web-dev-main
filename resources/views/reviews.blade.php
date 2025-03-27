@@ -34,9 +34,7 @@
                     </div>
         
                     <!-- Image Section (25%) -->
-                    <div class="w-full md:w-1/4 h-64 md:h-auto">
-                        <img src="{{ $reviewBike['thumbnailUrl'] ?? 'default-image.jpg' }}" alt="{{ $reviewBike['model'] }}" class="w-full h-full object-cover p-2 rounded-lg">
-                    </div>
+                    <img src="{{ $reviewBike['thumbnailUrl'] }}" alt="Bike Image" class="block mx-auto w-auto h-40">
                 </div>
             @endforeach
         </div>
